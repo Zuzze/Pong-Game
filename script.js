@@ -39,7 +39,8 @@ function drawBall() {
     ctx.beginPath();
     //circle: x center, y center, radius, start angle (rad), end angle (rad), ?direction
     ctx.arc(x, y, BALL_RADIUS, 0, Math.PI*2);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "green";
+   
     ctx.fill();
     ctx.closePath();
 }
@@ -53,9 +54,9 @@ function drawPaddle(){
 }
 
 function drawLives() {
-    ctx.font = "16px Helvetica";
+    ctx.font = "16px Courier New";
     ctx.fillStyle = "#0095DD";
-    ctx.fillText(`Lives: ${lives}`, canvas.width - 65, 20);
+    ctx.fillText(`Lives: ${lives}`, canvas.width - 90, 20);
 } 
 
 function checkCollisionToWalls(){
@@ -68,6 +69,7 @@ function checkCollisionToWalls(){
             delta_y = -delta_y;
         } else {
             lives--;
+                alert("OH NO, YOU LOST A LIFE!");
             if(!lives) {
                 alert("GAME OVER");
                 document.location.reload();
@@ -116,7 +118,7 @@ function drawBricks() {
 }
 
 function drawScore() {
-    ctx.font = "16px Helvetica";
+    ctx.font = "16px Courier New";
     ctx.fillStyle = "#0095DD";
     ctx.fillText(`Score: ${score}`, 8, 20);
 }
@@ -179,6 +181,11 @@ function mouseMoveHandler(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
     if(relativeX > 0 && relativeX < canvas.width) {
         paddlePosX = relativeX - PADDLE_WIDTH/2;
+        if (paddlePosX < 0){
+            paddlePosX = 0;
+        } else if (paddlePosX > canvas.width - PADDLE_WIDTH){
+            paddlePosX = canvas.width - PADDLE_WIDTH
+        }        
     }
 }
 
@@ -188,11 +195,10 @@ function checkCollisionToBricks(){
             var b = bricks[c][r];
             if(b.status == 1) {
                 // change direction when brick hit
-                if(x > b.x && x < b.x + BRICK_WIDTH && y > b.y && y < b.y + BRICK_HEIGHT) {
+                if(x > b.x && x < b.x + BRICK_WIDTH && y > b.y - BALL_RADIUS && y < b.y + BRICK_HEIGHT + BALL_RADIUS) {
                     delta_y = -delta_y;
                     b.status = 0 //make brick invisible after it is hit
                     score++;
-
                     //if all bricks destroyed, game won
                     if(score == BRICK_ROW_COUNT * BRICK_COL_COUNT) {
                         alert("YOU WIN, CONGRATULATIONS!");
