@@ -69,7 +69,6 @@ function checkCollisionToWalls(){
             delta_y = -delta_y;
         } else {
             lives--;
-                alert("OH NO, YOU LOST A LIFE!");
             if(!lives) {
                 alert("GAME OVER");
                 document.location.reload();
